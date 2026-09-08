@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>peck-x</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Input Area -->
+      <div class="input-area">
+        <div class="input-wrapper">
+          <textarea class="input-field" id="input-field" placeholder="添加一个待办..."></textarea>
+          <div class="input-toolbar">
+            <div class="input-footer-bar">
+              <button class="mode-btn active" data-mode="todo" id="mode-btn-todo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                待办
+              </button>
+              <button class="mode-btn" data-mode="note" id="mode-btn-note">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                </svg>
+                随记
+              </button>
+              <span class="mode-hint" id="mode-hint">Tab</span>
+            </div>
+            <div class="input-actions">
+              <span class="char-count" id="char-count">0/200</span>
+              <button class="expand-btn" id="btn-expand" title="展开（Shift+Tab）">
+                <svg class="expand-icon expand-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 7 3 12 9 17"/><polyline points="15 7 21 12 15 17"/>
+                </svg>
+                <svg class="expand-icon expand-icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="4 7 10 12 4 17"/><polyline points="20 7 14 12 20 17"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Metadata bar (todo mode only) -->
+        <div class="metadata-bar" id="metadata-bar">
+          <button class="meta-chip" id="chip-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span class="chip-label">分类</span>
+          </button>
+          <button class="meta-chip" id="chip-due">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="chip-label">截止</span>
+          </button>
+          <button class="meta-chip" id="chip-reminder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="chip-label">提醒</span>
+          </button>
+          <button class="meta-chip" id="chip-repeat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+            <span class="chip-label">重复</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent List -->
+      <div class="recent-list" id="recent-list">
+        <div class="recent-header">
+          <div class="recent-title">
+            <span id="recent-title-text">当前 · 待办</span>
+            <span class="recent-title-count" id="recent-count">0</span>
+          </div>
+          <div class="recent-actions-right">
+            <button class="nav-btn" id="btn-all-link" title="当前">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+              当前
+            </button>
+            <button class="completed-link" id="btn-completed-link" title="完成">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              完成
+            </button>
+            <button class="archive-link" id="btn-archive-link" title="归档">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+              <span id="btn-archive-text">归档</span>
+            </button>
+            <button class="trash-link" id="btn-trash-link" title="垃圾桶">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              垃圾桶
+            </button>
+          </div>
+        </div>
+        <div id="home-list"></div>
+        <div id="home-empty" class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          <p>还没有待办，添加一个吧</p>
+        </div>
+        <button class="recent-more-btn" id="btn-home-more" type="button">查看更多</button>
+      </div>
+
+      <!-- Full List Page -->
+      <div class="full-list-page" id="full-list-page">
+        <div class="flp-header">
+          <button class="flp-back-btn" id="flp-back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <div class="flp-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="flp-search" id="flp-search" placeholder="搜索...">
+          </div>
+        </div>
+        <div class="flp-title"><span>当前项目</span></div>
+        <div class="flp-category-wrap">
+          <div class="flp-category-bar" id="flp-category-bar">
+            <span class="flp-category-chip active" data-cat="">全部</span>
+          </div>
+          <button class="flp-category-more-btn" id="flp-cat-more-btn" title="更多分类">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="flp-category-dropdown" id="flp-cat-dropdown"></div>
+        </div>
+        <div class="flp-list" id="flp-list"></div>
+        <div class="flp-empty" id="flp-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <p>暂无内容</p>
+        </div>
+        <div class="flp-pagination" id="flp-pagination"></div>
+      </div>
+
+      <!-- Note View Page -->
+      <div class="note-view-page" id="note-view-page">
+        <div class="note-view-header">
+          <div class="note-view-header-left">
+            <button class="view-exit-btn note-view-back-btn" id="note-view-back-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <span class="view-exit-hint">Esc</span>
+            </button>
+            <span class="note-view-header-title">查看随记</span>
+          </div>
+        </div>
+        <div class="note-view-body">
+          <div class="note-view-content" id="note-view-content"></div>
+          <div class="note-view-info-row">
+            <div class="note-view-meta">
+              <span id="note-view-meta-time"></span>
+            </div>
+            <div class="note-view-category-row">
+              <span class="note-view-category-label">分类</span>
+              <span class="note-view-category-value" id="note-view-category-value">未设置</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Page -->
+      <div class="edit-page" id="edit-page">
+        <div class="edit-header">
+          <div class="edit-header-left">
+            <button class="view-exit-btn edit-back-btn" id="edit-back-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <span class="view-exit-hint">Esc</span>
+            </button>
+            <span class="edit-header-title">编辑随记</span>
+          </div>
+          <button class="edit-save-btn" id="edit-save-btn">保存</button>
+        </div>
+        <div class="edit-body">
+          <textarea class="edit-textarea" id="edit-textarea" placeholder="编辑内容..."></textarea>
+          <div class="edit-info-row">
+            <div class="edit-meta">
+              <span id="edit-meta-time"></span>
+            </div>
+            <div class="edit-category-row">
+              <span class="edit-category-label">分类</span>
+              <button class="edit-category-btn" id="edit-category-btn">未设置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trash Page -->
+      <div class="trash-page" id="trash-page">
+        <div class="flp-header">
+          <button class="flp-back-btn" id="trash-back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <div class="flp-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="flp-search" id="trash-search" placeholder="搜索垃圾桶...">
+          </div>
+        </div>
+        <div class="trash-retention">
+          <span id="trash-retention-text">垃圾桶 · 7天后自动清理</span>
+          <button class="trash-empty-btn" id="trash-empty-btn">清空垃圾桶</button>
+        </div>
+        <div class="trash-list" id="trash-list"></div>
+        <div class="trash-empty-state" id="trash-empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+          <p>垃圾桶为空</p>
+        </div>
+      </div>
+
+      <!-- Archive Page -->
+      <div class="completed-page" id="completed-page">
+        <div class="flp-header">
+          <button class="flp-back-btn" id="completed-back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <div class="flp-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="flp-search" id="completed-search" placeholder="搜索已完成待办...">
+          </div>
+        </div>
+        <div class="flp-title"><span>已完成待办</span></div>
+        <div class="completed-list" id="completed-list"></div>
+        <div class="completed-empty-state" id="completed-empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <p>暂无已完成待办</p>
+        </div>
+      </div>
+
+      <!-- Archive Page -->
+      <div class="archive-page" id="archive-page">
+        <div class="flp-header">
+          <button class="flp-back-btn" id="archive-back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <div class="flp-search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="flp-search" id="archive-search" placeholder="搜索归档...">
+          </div>
+        </div>
+        <div class="flp-title"><span id="archive-title-text">待办归档</span></div>
+        <div class="archive-list" id="archive-list"></div>
+        <div class="archive-empty-state" id="archive-empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+          <p id="archive-empty-text">待办归档为空</p>
+        </div>
+      </div>
+
+      <!-- Config Page -->
+      <div class="config-page" id="config-page">
+        <div class="config-header">
+          <button class="config-back-btn" id="config-back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <span class="config-header-title">配置</span>
+        </div>
+        <div class="config-body">
+          <div class="config-app-info">
+            <div class="config-app-icon">
+              <img src="assets/icon-transparent.png" alt="peck-x 图标">
+            </div>
+            <div class="config-app-name">peck-x</div>
+            <div class="config-app-version" id="cfg-app-version">v0.1.0</div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-item">
+              <div class="config-item-left">
+                <div class="config-item-label">开机自启动</div>
+                <div class="config-item-desc">系统启动时自动运行</div>
+              </div>
+              <label class="config-toggle">
+                <input type="checkbox" id="cfg-auto-start">
+                <span class="toggle-track"></span>
+              </label>
+            </div>
+
+            <div class="config-item">
+              <div class="config-item-left">
+                <div class="config-item-label">全局快捷键</div>
+                <div class="config-item-desc">用于显示/隐藏主窗口，按输入格式例如 Alt+X 或 Ctrl+Alt+Z</div>
+              </div>
+              <div class="config-shortcut-edit">
+                <input class="config-shortcut-input" id="cfg-shortcut-input" type="text" value="ALT + X" spellcheck="false" autocomplete="off" readonly>
+                <button class="config-shortcut-save-btn" id="cfg-shortcut-save-btn" type="button">保存</button>
+              </div>
+            </div>
+
+            <div class="config-item">
+              <div class="config-item-left">
+                <div class="config-item-label">完成待办条目保留天数</div>
+                <div class="config-item-desc">到期后自动移入垃圾桶</div>
+              </div>
+              <select class="config-select" id="cfg-completed-retention">
+                <option value="3">3 天</option>
+                <option value="7">7 天</option>
+                <option value="14">14 天</option>
+                <option value="30">30 天</option>
+              </select>
+            </div>
+
+            <div class="config-item">
+              <div class="config-item-left">
+                <div class="config-item-label">垃圾桶保留天数</div>
+                <div class="config-item-desc">到期自动清理</div>
+              </div>
+              <select class="config-select" id="cfg-retention">
+                <option value="3">3 天</option>
+                <option value="7">7 天</option>
+                <option value="14">14 天</option>
+                <option value="30">30 天</option>
+              </select>
+            </div>
+
+            <div class="config-item">
+              <div class="config-item-left">
+                <div class="config-item-label">首页显示条数</div>
+                <div class="config-item-desc">超出显示"查看更多"</div>
+              </div>
+              <select class="config-select" id="cfg-preview-count">
+                <option value="5">5 条</option>
+                <option value="8">8 条</option>
+                <option value="15">15 条</option>
+                <option value="20">20 条</option>
+              </select>
+            </div>
+
+            <div class="config-item config-item-stack">
+              <div class="config-help-row">
+                <span class="config-help-label">站外提醒说明</span>
+                <span class="config-help" tabindex="-1">
+                  <button class="config-help-trigger" type="button" aria-label="查看站外提醒说明">
+                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"></circle>
+                      <path d="M7.9 7.6a2.3 2.3 0 0 1 4.2 1.2c0 1.2-.8 1.8-1.5 2.3-.6.4-1 .8-1 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                      <circle cx="10" cy="14.1" r="0.9" fill="currentColor"></circle>
+                    </svg>
+                  </button>
+                  <span class="config-help-card" role="note">
+                    <span class="config-help-title">站外提醒规则</span>
+                    <span class="config-help-text">需先配置邮箱或手机号，并在待办提醒中启用对应渠道。</span>
+                    <span class="config-help-text">同一提醒时间点，站外提醒只发送一次。</span>
+                    <span class="config-help-text">稍后提醒只保留站内提醒，不再重复发送站外提醒。</span>
+                    <span class="config-help-text">同一待办若设置多个提醒时间，每个时间点会分别提醒。</span>
+                  </span>
+                </span>
+              </div>
+
+              <div class="config-item-left">
+                <div class="config-item-label">提醒邮箱</div>
+                <div class="config-item-desc">用于邮件提醒接收，也可先发送测试邮件验证 SMTP 链路</div>
+              </div>
+              <input class="config-text-input" id="cfg-email" type="email" placeholder="name@example.com" autocomplete="off">
+              <button class="config-shortcut-save-btn config-email-test-btn" id="cfg-email-test-btn" type="button">发送测试邮件</button>
+            </div>
+
+            <div class="config-item config-item-stack">
+              <div class="config-item-left">
+                <div class="config-item-label">提醒手机号</div>
+                <div class="config-item-desc">用于短信提醒地址校验，本次仅保存配置</div>
+              </div>
+              <input class="config-text-input" id="cfg-phone" type="tel" placeholder="请输入手机号" autocomplete="off">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drawer (todo detail) -->
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+    <aside class="drawer" id="drawer">
+      <div class="drawer-header">
+        <span class="drawer-title">待办详情</span>
+        <button class="drawer-close" id="drawer-close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="drawer-body" id="drawer-body">
+        <!-- Populated dynamically -->
+      </div>
+    </aside>
+
+    <!-- Popover Backdrop -->
+    <div class="popover-backdrop" id="popover-backdrop"></div>
+    <!-- Popover Container -->
+    <div class="popover" id="popover"></div>
+  </div>
+
+  <input type="file" id="image-file-input" accept="image/*" style="display:none;">
+  <div class="toast-container" id="toast-container"></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

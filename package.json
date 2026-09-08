@@ -1,0 +1,23 @@
+{
+  "name": "peckx",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "build:no-bundle": "tauri build --no-bundle",
+    "check:js": "node --check src/js/app.js",
+    "check:rust": "cargo check --manifest-path src-tauri/Cargo.toml",
+    "check": "npm run check:js && npm run check:rust"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-autostart": "^2.5.1",
+    "@tauri-apps/plugin-global-shortcut": "^2.3.2"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
+    "sharp": "^0.35.3"
+  }
+}

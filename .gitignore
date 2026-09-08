@@ -1,0 +1,16 @@
+# Rust build outputs
+src-tauri/target/
+
+# Frontend dependencies
+node_modules/
+
+# User data (runtime-generated)
+peckxData/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/settings.json
+.idea/

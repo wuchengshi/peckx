@@ -1,0 +1,19 @@
+[package]
+name = "peckx"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-opener = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-global-shortcut = "2"
+chrono = { version = "0.4", features = ["clock"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+windows = { version = "0.58", features = ["Win32_UI_WindowsAndMessaging", "Win32_Foundation"] }
+base64 = "0.22"
+lettre = { version = "0.11", default-features = false, features = ["builder", "smtp-transport", "hostname", "pool", "rustls-tls"] }
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }

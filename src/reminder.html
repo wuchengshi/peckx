@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>提醒</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="reminder-window-body" data-slot="0">
+  <div class="reminder-shell">
+    <div class="popup-window" id="popup-window">
+      <div class="popup-header">
+        <div class="popup-title">
+          <span class="pulse-dot" id="popup-pulse"></span>
+          <span>待处理提醒</span>
+        </div>
+        <span class="popup-counter" id="popup-counter">0 / 0</span>
+      </div>
+      <div class="card-stage no-prev no-next" id="card-stage"></div>
+      <div class="card-dots" id="card-dots"></div>
+      <div class="reminder-empty-state" id="empty-state" hidden>
+        <div class="reminder-empty-icon">✨</div>
+        <div class="reminder-empty-title">没有待处理的提醒</div>
+        <div class="reminder-empty-subtitle">一切尽在掌握</div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="js/reminder-window.js"></script>
+</body>
+</html>

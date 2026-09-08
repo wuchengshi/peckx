@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Default capability set","local":true,"windows":["main"],"permissions":["core:default","opener:default","autostart:default","global-shortcut:allow-register","global-shortcut:allow-unregister","global-shortcut:allow-is-registered"]}}
