@@ -94,8 +94,10 @@ npm run build:no-bundle
 运行后，应用会自动创建运行数据目录。用户配置文件位于：
 
 ```text
-peckxData/config.json
+%AppData%/com.peckx.desktop/config.json
 ```
+
+如果程序无法获取系统 app data 目录，才会回退到可执行文件同目录下的 peckxData/config.json。
 
 示例：
 
@@ -126,8 +128,10 @@ peckxData/config.json
 邮件提醒除了用户配置中的 notification_email，还依赖系统级 SMTP 配置文件：
 
 ```text
-peckxData/sys-config.json
+%AppData%/com.peckx.desktop/sys-config.json
 ```
+
+同样地，只有在系统 app data 目录不可用时，才会回退到可执行文件同目录下的 peckxData/sys-config.json。
 
 示例：
 
@@ -166,7 +170,7 @@ peckxData/sys-config.json
 运行后生成的数据目录结构示意：
 
 ```text
-peckxData/
+%AppData%/com.peckx.desktop/
 ├── config.json
 ├── sys-config.json
 ├── todos.json
@@ -181,6 +185,7 @@ peckxData/
 - todos.json：待办列表数据
 - config.json：用户侧配置
 - sys-config.json：SMTP 等系统级配置
+- 如果系统 app data 目录不可用，程序会回退到可执行文件同目录下的 peckxData/。
 
 更标准的仓库发布方式通常是：
 
