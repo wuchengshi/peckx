@@ -15,6 +15,14 @@ peck-x 是一个基于 Tauri 2 + Rust + 原生 HTML/CSS/JavaScript 的桌面端�
 - 提醒能力：支持应用内提醒，邮件链路可选
 - 系统集成：支持全局快捷键、开机自启动、托盘驻留
 
+## 界面展示
+
+<img width="499" height="440" alt="image" src="https://github.com/user-attachments/assets/f3a31af6-b8fe-466a-b475-1a3e8cd32d15" />
+
+<img width="501" height="486" alt="image" src="https://github.com/user-attachments/assets/f98d035d-5df5-4d97-a8e3-f6482678e8f6" />
+
+
+
 ## 技术栈
 
 - 桌面框架：Tauri 2
